@@ -87,7 +87,7 @@ typedef union {
 
 /* old sparc64 gcc could not compile this */
 #undef SPARC64_GCC_WORKAROUND
-#if defined(__sparc64__) && defined(__GNUC__) && __GNUC__ < 3
+#if defined(__sparc__) && defined(__arch64__) && defined(__GNUC__) && __GNUC__ < 3
 #define SPARC64_GCC_WORKAROUND
 #endif
 
