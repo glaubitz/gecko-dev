@@ -416,6 +416,9 @@ def split_triplet(triplet):
     elif cpu == 'sh4':
         canonical_cpu = 'sh4'
         endianness = 'little'
+    elif cpu in ('m68k'):
+        canonical_cpu = 'm68k'
+        endianness = 'big'
     else:
         die('Unknown CPU type: %s' % cpu)
 
