@@ -85,6 +85,9 @@
 #elif defined(__ppc__) || defined(__powerpc__)
 #define ARCH_CPU_PPC 1
 #define ARCH_CPU_32_BITS 1
+#elif defined(__m68k__)
+#define ARCH_CPU_M68K 1
+#define ARCH_CPU_32_BITS 1
 #elif defined(__sparc__) && defined(__arch64__)
 #define ARCH_CPU_SPARC 1
 #define ARCH_CPU_64_BITS 1
