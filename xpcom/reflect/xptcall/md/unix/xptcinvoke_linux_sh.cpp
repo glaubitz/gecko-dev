@@ -175,9 +175,10 @@ copy_to_stack(PRUint32 **that,PRUint32 methodIndex,PRUint32 paramCount, nsXPTCVa
 	"mov 	r2, r8  \n\t" 	// Save stack drop
 	"add	#48, r2 \n\t"	// Space for 4 longs, 8 floats
 	"sub	r2, r15 \n\t"	// Drop stack
-	"mov.l 	1f, r1 \n\t"	// Get address of copy_to_stack_function
-	"jsr  	@r1 \n\t"
+	"mov.l 	1f, r1 \n\t"	// Get relative address of copy_to_stack_function
+	"bsrf  	r1 \n\t"
 	  "mov.l   r15, @-r15 \n\t"	//  Params will be dumped here
+	"0:\n\t"
 	"add	#4, r15 \n\t"	// Pop stack ptr param. r0 contains method address
 
 	/* Now everything is laid out nicely in the stack.  We just have to
@@ -205,6 +206,6 @@ copy_to_stack(PRUint32 **that,PRUint32 methodIndex,PRUint32 paramCount, nsXPTCVa
 	"rts\n\t"
 	  "mov.l @r15+, r14\n\t"
 	".balign 4\n\t"
-	"1: .long copy_to_stack \n\t"
+	"1: .long copy_to_stack - 0b \n\t"
    );
 

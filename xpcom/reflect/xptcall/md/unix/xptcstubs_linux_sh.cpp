@@ -165,7 +165,6 @@ PrepareAndDispatch(nsXPTCStubBase* self, int methodIndex, PRUint32* data,
 __asm__ (
 	".text\n"
 	".little\n"
-	".section	.rodata\n"
 
 	".globl SharedStub\n"
 	".type  SharedStub, @function\n"
@@ -197,8 +196,9 @@ __asm__ (
 	"mov	   r1, r6\n"	/* r6 = PrepareAndDispatch data param			*/
 
 	"mov.l  1f, r1\n"
-	"jsr	   @r1\n"		/* Note, following instruction is executed first*/
+	"bsrf	   r1\n"		/* Note, following instruction is executed first*/
 	  "mov	   r2, r5\n"		/* r5 = PrepareAndDispatch methodIndex param	*/
+	"0:\n"
 
 	"mov		r14,r15\n"
 	"lds.l	@r15+,pr\n"
@@ -207,7 +207,7 @@ __asm__ (
 	  "nop\n"
 	".align 2\n"
 	"1:\n"
-	".long  PrepareAndDispatch\n"
+	".long  PrepareAndDispatch - 0b\n"
 	);
 
 #define STUB_ENTRY(n) 						\
@@ -231,44 +231,28 @@ __asm__( 							\
 	".endif\n\t" 						\
 	"mov.l 	1f, r1 \n"					\
 	".if "#n" < 128 \n"					\
-	"jmp @r1 \n"						\
+	"braf r1 \n"						\
 	"  mov #"#n",r2 \n"					\
 	".elseif "#n" < 256 \n"					\
 	"mov #"#n", r2 \n"					\
-	"jmp @r1 \n"						\
+	"braf r1 \n"						\
 	"  extu.b r2, r2 \n"					\
 	".else \n"						\
 	"mov #"#n" & 0xff,r2 \n"				\
 	"extu.b	r2, r2 \n"					\
 	"mov #"#n">>8, r3 \n"					\
 	"shll8	r3 \n"						\
-	"jmp @r1 \n"						\
+	"braf r1 \n"						\
 	"  or r3, r2 \n"					\
 	".endif \n"						\
-	".if "#n" % 20 == 0\n"					\
+	"0: \n"							\
 	".align 2\n"						\
 	"1:\n"							\
-	".long SharedStub\n"					\
-	".endif\n"						\
+	".long SharedStub - 0b\n"				\
 	);
 
 
-/* Due to the fact that the SH4 can only load forward labels, we have
- * to use sentinel_entry to output the last label. A better solution
- * would be to introduce a STUB_LAST macro in the defs.in file, but
- * this will do for now
- */
-
 #define SENTINEL_ENTRY(n) 		\
-__asm__( 				\
-".if "#n" == 0  \n"			\
-	".text \n"			\
-	".align 2\n"			\
-	"1:\n"				\
-	".long SharedStub\n"		\
-".endif\n"				\
-); 					\
-					\
 nsresult nsXPTCStubBase::Sentinel##n()  \
 { \
 	NS_ASSERTION(0,"nsXPTCStubBase::Sentinel called"); \
