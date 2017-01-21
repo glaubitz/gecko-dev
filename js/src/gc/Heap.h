@@ -278,7 +278,7 @@ struct Cell
   protected:
     inline uintptr_t address() const;
     inline Chunk* chunk() const;
-} JS_HAZ_GC_THING;
+} JS_HAZ_GC_THING __attribute__ ((aligned(4)));
 
 // A GC TenuredCell gets behaviors that are valid for things in the Tenured
 // heap, such as access to the arena and mark bits.
