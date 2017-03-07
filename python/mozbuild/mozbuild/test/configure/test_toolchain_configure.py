@@ -976,6 +976,10 @@ class LinuxCrossCompileToolchainTest(BaseToolchainTest):
     PLATFORMS = {
         'i686-pc-linux-gnu': GCC_PLATFORM_X86_LINUX,
         'x86_64-pc-linux-gnu': GCC_PLATFORM_X86_64_LINUX,
+        'x86_64-unknown-linux-gnux32': little_endian + {
+            '__x86_64__': 1,
+            '__ILP32__': 1,
+        },
         'arm-unknown-linux-gnu': GCC_PLATFORM_ARM_LINUX,
         'aarch64-unknown-linux-gnu': little_endian + {
             '__aarch64__': 1,

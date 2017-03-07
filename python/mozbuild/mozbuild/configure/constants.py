@@ -55,6 +55,7 @@ CPU_bitness = {
     'sh4': 32,
     'sparc': 32,
     'sparc64': 64,
+    'x32': 32,
     'x86': 32,
     'x86_64': 64,
 }
@@ -74,6 +75,7 @@ WindowsBinaryType = EnumString.subclass(
 # The order of those checks matter
 CPU_preprocessor_checks = OrderedDict((
     ('x86', '__i386__ || _M_IX86'),
+    ('x32', '__x86_64__ && __ILP32__'),
     ('x86_64', '__x86_64__ || _M_X64'),
     ('arm', '__arm__ || _M_ARM'),
     ('aarch64', '__aarch64__'),
